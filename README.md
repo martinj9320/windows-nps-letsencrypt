@@ -1,12 +1,12 @@
 # windows-nps-letsencrypt
 A PowerShell script that integrates with [simple-acme](https://simple-acme.com/) to provide Let's Encrypt certificates for the Windows Network Policy Server.
 
-This repository contains a minimal PowrShell script to automatically update the server certificate used by the Windows Network Policy Server after a certifiate renewal via simple-acme.
+This repository contains a minimal PowerShell script to automatically update the server certificate used by the Windows Network Policy Server after a certificate renewal via simple-acme.
 A server certificate is needed for server validation with PEAP-MS-CHAP v2, PEAP-TLS, or EAP-TLS as the authentication method.
 Let's Encrypt **cannot** issue client certificates to be used with EAP-TLS or PEAP-TLS.
 
 ## How it works
-The configuration of the Windows Network Policy Server (NPS), including the thumbprint of a configured server certificate for a given RADIUS profile, can be exported to a XML file or can be imported from a XML file. The script exports the configuration to a temporary location, replaces the certificate thumbprint for the given RADIUS profile with the thumbprint of the new certificate, imports the updated NPS configuration and deletes the exported XML file. simple-acme directly passes the thumbprint of the renewed certificate to the script as a parameter.
+The configuration of the Windows Network Policy Server (NPS), including the thumbprint of a configured server certificate for a given RADIUS profile, can be exported to an XML file or can be imported from an XML file. The script exports the configuration to a temporary location, replaces the certificate thumbprint for the given RADIUS profile with the thumbprint of the new certificate, imports the updated NPS configuration and deletes the exported XML file. simple-acme directly passes the thumbprint of the renewed certificate to the script as a parameter. It is not required to restart NPS after the import as the configuration is automatically applied.
 
 ## Getting started
 1. Download and install simple-acme as described in the [documentation](https://simple-acme.com/manual/installation).
