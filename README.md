@@ -13,7 +13,10 @@ The configuration of the Windows Network Policy Server (NPS), including the thum
 2. Install a [DNS validation plugin](https://simple-acme.com/reference/plugins/validation/dns/) for simple-acme that works with your DNS provider.
 3. Download the `Update-NPSPEAPCert.ps1` script from the Releases section of this repository and place it in the `Scripts` directory of your simple-acme installation. You may need to allow execution of unsigned PowerShell scripts on your server.
 4. Create a directory named `tmp` within the `Scripts` directory. The exported XML configuration file will be saved there.
-5. Manually export the XML file with `netsh nps export filename=<path\file.xml> exportPSK=YES`. Replace `<path\file.xml>` with a directory and file name of your choice, e.g `Users\Administrator\Downloads\NPSConfig.xml`. Open the exported XML file in a browser or editor of your choice and search for the `msEAPConfiguration` node. Check if the `$prefix` and `$suffix` variables which are predefined in my script match your configuration. If they do not match, replace them with the values in your configuration.
+5. Manually export the XML file with
+    ```
+    netsh nps export filename=<path\file.xml> exportPSK=YES
+    ```. Replace `<path\file.xml>` with a directory and file name of your choice, e.g `Users\Administrator\Downloads\NPSConfig.xml`. Open the exported XML file in a browser or editor of your choice and search for the `msEAPConfiguration` node. Check if the `$prefix` and `$suffix` variables which are predefined in my script match your configuration. If they do not match, replace them with the values in your configuration.
 6. Replace `<PROFILE>` in the `$node` variable with the name of your RADIUS profile, e.g `Secure_Wireless_Connections` which can also be found in the exported XML file.
 7. Request a new certificate using simple-acme and add the following to your command line arguments.
     ```
