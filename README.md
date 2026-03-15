@@ -21,7 +21,7 @@ The configuration of the Windows Network Policy Server (NPS), including the thum
 6. Replace `<PROFILE>` in the `$node` variable with the name of your RADIUS profile, e.g `Secure_Wireless_Connections` which can also be found in the exported XML file.
 7. Request a new certificate using simple-acme and add the following to your command line arguments.
     ```powershell
-    --store certificatestore --certificatestore My --installation script --script .\Scripts\Update-NPSPEAPCert.ps1 --scriptparameters {CertThumbprint}
+    --store certificatestore --certificatestore My --installation script --script .\Scripts\InstallNPS.ps1 --scriptparameters {CertThumbprint}
     ```
     This adds the certificate to the `Local Computer\My` certificate store and executes the PowerShell script after a successful renewal.
 8. Below is a complete example for Cloudflare as the DNS provider. Replace `<API-TOKEN>` with your Cloudflare API token. This requires the Cloudflare DNS validation plugin to be installed. Please refer to the [documentation](https://simple-acme.com/reference/plugins/validation/dns/cloudflare) to configure the required permissions for your API token. Adjust the `--emailaddress` and `--host` parameters to match your configuration.
