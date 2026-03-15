@@ -1,7 +1,7 @@
 <#
 
 .EXAMPLE
-wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\Update-NPSPEAPCert.ps1 --scriptparameters {CertThumbprint}
+wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\InstallNPS.ps1 --scriptparameters {CertThumbprint}
 
 #>
 
@@ -10,7 +10,7 @@ Param(
     [string]$thumbprint
     )
 
-$path = Join-Path $PSScriptRoot 'tmp\NPSConfig.xml'
+$path = Join-Path $PSScriptRoot 'tmp\ias.xml'
 $prefix = '190000000000000000000000000000003800000002000000380000000100000014000000'
 $suffix = '0100000001000000100000001a00000000000000'
 $thumbprint = $thumbprint.ToLower()
