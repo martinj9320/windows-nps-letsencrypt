@@ -1,7 +1,7 @@
 <#
 
 .EXAMPLE
-wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\InstallNPS.ps1 --scriptparameters {CertThumbprint}
+wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint}
 
 #>
 
@@ -18,7 +18,7 @@ $thumbprint = $thumbprint.ToLower()
 netsh nps export filename=$path exportPSK=YES
 
 $xml = [xml](Get-Content -Path $path)
-$node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.<PROFILE>.Properties.msEAPConfiguration
+$node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.Children.<PROFILE>.Properties.msEAPConfiguration
 
 $node.'#text' = $prefix + $thumbprint + $suffix
 
