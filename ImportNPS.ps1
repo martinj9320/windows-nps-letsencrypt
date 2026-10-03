@@ -17,7 +17,8 @@ $thumbprint = $thumbprint.ToLower()
 
 netsh nps export filename=$path exportPSK=YES
 
-$xml = [xml](Get-Content -Path $path)
+$xml = New-Object System.Xml.XmlDocument
+$xml.Load($path)
 $node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.Children.<PROFILE>.Properties.msEAPConfiguration
 
 $node.'#text' = $prefix + $thumbprint + $suffix
