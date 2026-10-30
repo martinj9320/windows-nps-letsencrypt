@@ -11,8 +11,10 @@ Param(
     )
 
 $path = Join-Path $PSScriptRoot 'tmp\ias.xml'
-$prefix = '190000000000000000000000000000003800000002000000380000000100000014000000'
-$suffix = '0100000001000000100000001a00000000000000'
+#get current certs thumbprints
+$certs=Get-ChildItem -Path "Cert:\LocalMachine\my" -Recurse|select Thumbprint
+$thumbprintsregex=$certs.Thumbprint.ToLower() -join "|"
+
 $thumbprint = $thumbprint.ToLower()
 
 netsh nps export filename=$path exportPSK=YES
@@ -21,7 +23,9 @@ $xml = New-Object System.Xml.XmlDocument
 $xml.Load($path)
 $node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.Children.<PROFILE>.Properties.msEAPConfiguration
 
-$node.'#text' = $prefix + $thumbprint + $suffix
+#replace only the thumbprint leaving the rest of the EAP Configuration Intact
+$newnodetext= $node.'#text' -replace $thumbprintsregex,$thumbprint
+$node.'#text' = $newnodetext
 
 $xml.Save($path)
 
