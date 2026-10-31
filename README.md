@@ -10,22 +10,21 @@ The configuration of the Windows Network Policy Server (NPS), including the thum
 
 ## Getting started
 1. Download and install simple-acme as described in the [documentation](https://simple-acme.com/manual/installation).
-2. Install a [DNS validation plugin](https://simple-acme.com/reference/plugins/validation/dns/) for simple-acme that works with your DNS provider.
+2. Install a [DNS validation plugin](https://simple-acme.com/reference/plugins/validation/dns/) for simple-acme that works with your DNS provider. The following steps assume Cloudflare as your DNS provider.
 3. Download the `ImportNPS.ps1` script from the Releases section of this repository and place it in the `Scripts` directory of your simple-acme installation. You may need to allow execution of unsigned PowerShell scripts on your server.
 4. Create a directory named `tmp` within the `Scripts` directory. The exported XML configuration file will be saved there.
-5. Manually export the XML file with
+5. Request a new certificate using simple-acme once without executing the script:
+   ```powershell
+   wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My
+   ```
+6. Select the newly requested certificate when configuring one or more network policies.
+7. Manually export the XML file with
     ```powershell
     netsh nps export filename=%USERPROFILE%\Downloads\ias.xml exportPSK=YES
     ```
-   Open the exported XML file in a browser or editor of your choice and search for the `msEAPConfiguration` node.
-6. Replace the `$prefix` and `$suffix` variables which are predefined in my script to match your configuration.
-7. Replace `<PROFILE>` in the `$node` variable with the name of your RADIUS profile, e.g `Secure_Wireless_Connections` which can also be found in the exported XML file.
-8. Request a new certificate using simple-acme and add the following to your command line arguments.
-    ```powershell
-    --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint}
-    ```
-    This adds the certificate to the `Local Computer\My` certificate store and executes the PowerShell script after a successful renewal.
-9. Below is a complete example for Cloudflare as the DNS provider. Replace `<API-TOKEN>` with your Cloudflare API token. This requires the Cloudflare DNS validation plugin to be installed. Please refer to the [documentation](https://simple-acme.com/reference/plugins/validation/dns/cloudflare) to configure the required permissions for your API token. Adjust the `--emailaddress` and `--host` parameters to match your configuration.
-    ```powershell
-    wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint}
+   Open the exported XML file in a browser or editor of your choice and search for the `RadiusProfiles` node.
+8. Replace `<PROFILE>` in the `$node` variable with the name of your RADIUS profile, e.g `Secure_Wireless_Connections`.
+9. Update the certificate renewal to execute the script after a successful renewal:
+   ```powershell
+    wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint} {OldCertThumbprint}
     ```
