@@ -1,19 +1,22 @@
 <#
 
 .EXAMPLE
-wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint}
+wacs.exe --accepttos --emailaddress mail@example.com --source manual --host radius.example.com --validation cloudflare --cloudflareapitoken <API-TOKEN> --store certificatestore --certificatestore My --installation script --script .\Scripts\ImportNPS.ps1 --scriptparameters {CertThumbprint} {OldCertThumbprint}
 
 #>
 
 Param(
     [Parameter(Position=0,Mandatory=$true)]
-    [string]$thumbprint
+    [string]$CertThumbprint,
+
+    [Parameter(Position=1,Mandatory=$true)]
+    [string]$OldCertThumbprint
     )
 
 $path = Join-Path $PSScriptRoot 'tmp\ias.xml'
-$prefix = '190000000000000000000000000000003800000002000000380000000100000014000000'
-$suffix = '0100000001000000100000001a00000000000000'
-$thumbprint = $thumbprint.ToLower()
+
+$CertThumbprint = $CertThumbprint.ToLower()
+$OldCertThumbprint = $OldCertThumbprint.ToLower()
 
 netsh nps export filename=$path exportPSK=YES
 
@@ -21,7 +24,7 @@ $xml = New-Object System.Xml.XmlDocument
 $xml.Load($path)
 $node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.Children.<PROFILE>.Properties.msEAPConfiguration
 
-$node.'#text' = $prefix + $thumbprint + $suffix
+$node.InnerText = $node.InnerText.Replace($OldCertThumbprint, $CertThumbprint)
 
 $xml.Save($path)
 
