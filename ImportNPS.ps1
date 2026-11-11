@@ -24,7 +24,18 @@ $xml = New-Object System.Xml.XmlDocument
 $xml.Load($path)
 $node = $xml.Root.Children.Microsoft_Internet_Authentication_Service.Children.RadiusProfiles.Children.<PROFILE>.Properties.msEAPConfiguration
 
-$node.InnerText = $node.InnerText.Replace($OldCertThumbprint, $CertThumbprint)
+#If there is more than one EAP Configuration specified for the profile, it is an array
+if($node.InnerText -is [System.Array])
+{
+    foreach($InnerString in $node.InnerText)
+    {
+        $InnerString.Replace($OldCertThumbprint, $CertThumbprint)
+    }
+} else
+{
+    $node.InnerText = $node.InnerText.Replace($OldCertThumbprint, $CertThumbprint)
+}
+
 
 $xml.Save($path)
 
